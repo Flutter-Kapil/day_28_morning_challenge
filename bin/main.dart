@@ -10,5 +10,28 @@
 // flattenList([1, "2", [3, function () { return 4; }, [ "five" ], "six", true, { prop: "val" }]])
 //  ➞ [1, "2", 3, 4, "five", "six", true, { prop: "val" }]
 
+List<Object> flattenList(List list, List newList) {
+//  newList.addAll(list);
+  for (var item in list) {
+    if (item is List) {
+      flattenList(item, newList);
+    } else if (item is Function) {
+      (item() is List) ? flattenList(item(), newList) : newList.add(item());
+    } else {
+      newList.add(item);
+    }
+  }
+  return newList;
+}
+
 main() {
+  print(flattenList([
+    [
+      2,
+      2,
+      [2]
+    ]
+  ], []));
+
+  print((() => 4));
 }
