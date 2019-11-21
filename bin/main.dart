@@ -10,14 +10,15 @@
 // flattenList([1, "2", [3, function () { return 4; }, [ "five" ], "six", true, { prop: "val" }]])
 //  ➞ [1, "2", 3, 4, "five", "six", true, { prop: "val" }]
 
-List<Object> flattenList(List list) {
+List<Object> flattenList(dynamic list) {
   List newList=[];
 //  newList.addAll(list);
   for (var item in list) {
     if (item is List) {
-      flatten(item, newList);
+      newList.addAll(flattenList(item));
     } else if (item is Function) {
-      (item() is List) ? flatten(item(), newList) : newList.add(item());
+      dynamic output = item();
+      newList.addAll(flattenList(output));
     } else {
       newList.add(item);
     }
@@ -25,18 +26,7 @@ List<Object> flattenList(List list) {
   return newList;
 }
 
-List<Object> flatten(List list, List newList) {
-  for (var item in list) {
-    if (item is List) {
-      flatten(item, newList);
-    } else if (item is Function) {
-      (item() is List) ? flatten(item(), newList) : newList.add(item());
-    } else {
-      newList.add(item);
-    }
-  }
-  return newList;
-}
+
 
 main() {
   print(flattenList([
